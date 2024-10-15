@@ -12,6 +12,11 @@ const minCount = 2;
 let rowCount = table.rows.length;
 let columnCount = table.rows[0].cells.length;
 
+function updateTableSize() {
+  rowCount = table.rows.length;
+  columnCount = table.rows[0]?.cells.length || 0;
+}
+
 function updateBtnsStates() {
   addRowBtn.disabled = rowCount >= maxCount;
   deleteRowBtn.disabled = rowCount <= minCount;
@@ -20,6 +25,10 @@ function updateBtnsStates() {
 }
 
 addRowBtn.addEventListener('click', () => {
+  if (rowCount >= maxCount) {
+    return;
+  }
+
   const newRow = table.insertRow();
 
   for (let i = 0; i < columnCount; i++) {
@@ -28,25 +37,29 @@ addRowBtn.addEventListener('click', () => {
     newCell.textContent = '';
   }
 
-  rowCount++;
+  updateTableSize();
   updateBtnsStates();
 });
 
 deleteRowBtn.addEventListener('click', () => {
   table.deleteRow(-1);
 
-  rowCount--;
+  updateTableSize();
   updateBtnsStates();
 });
 
 addColumnBtn.addEventListener('click', () => {
+  if (columnCount >= maxCount) {
+    return;
+  }
+
   for (let i = 0; i < rowCount; i++) {
     const cell = table.rows[i].insertCell();
 
     cell.textContent = '';
   }
 
-  columnCount++;
+  updateTableSize();
   updateBtnsStates();
 });
 
@@ -55,8 +68,9 @@ deleteColumnBtn.addEventListener('click', () => {
     table.rows[i].deleteCell(-1);
   }
 
-  columnCount--;
+  updateTableSize();
   updateBtnsStates();
 });
 
+updateTableSize();
 updateBtnsStates();
